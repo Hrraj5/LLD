@@ -61,7 +61,7 @@ class LRUCache {
 }
 
 // LRU Cache
-const cache = new LRUCache(3);
+const cache = new LRUCache(2);
 
 // Queries
 cache.put(1, 1);
