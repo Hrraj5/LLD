@@ -1,63 +1,59 @@
-class Node {
-  constructor(key, val) {
-    this.key = key;
-    this.val = val;
-    this.next = null;
-    this.prev = null;
-  }
+class Node{
+    constructor(key,val){
+        this.key = key;
+        this.val = val;
+        this.next = null;
+        this.prev = null;
+    }
 }
 
-class LRUCache {
-  constructor(capacity) {
-    this.capacity = capacity;
-    this.head = new Node(-1, -1);
-    this.tail = new Node(-1, -1);
-
-    this.nodeKeyMap = new Map();
-
-    this.head.next = this.tail;
-    this.tail.prev = this.head;
-  }
-
-  putNodeAfterHead(node) {
-    let temp = this.head.next;
-    this.head.next = node;
-    node.next = temp;
-    node.prev = this.head;
-    temp.prev = node;
-  }
-
-  deleteNode(node) {
-    let nextNode = node.next;
-    let prevNode = node.prev;
-    prevNode.next = nextNode;
-    nextNode.prev = prevNode;
-  }
-  put(key, value) {
-    if (this.nodeKeyMap.has(key)) {
-      let node = this.nodeKeyMap.get(key);
-      node.val = value;
-      this.deleteNode(node)
-      this.putNodeAfterHead(node);
-      return;
+class LRUCache{
+    constructor(capacity){
+        this.capacity = capacity;
+        this.head = new Node(-1,-1);
+        this.tail = new Node(-1,-1);
+        this.nodeMapKey = new Map();
+        
+        this.head.next = this.tail;
+        this.tail.prev = this.head;
     }
-    if (this.capacity == this.nodeKeyMap.size) {
-      let lastNode = this.tail.prev;
-      this.nodeKeyMap.delete(lastNode.key);
-      this.deleteNode(lastNode);
+    
+    putNodeAfterHead(node){
+        let nextNode = this.head.next;
+        node.next = nextNode;
+        node.prev = this.head;
+        this.head.next = node;
+        nextNode.prev = node;
     }
-    let newNode = new Node(key, value);
-    this.nodeKeyMap.set(key, newNode);
-    this.putNodeAfterHead(newNode);
-  }
-  get(key) {
-    let node = this.nodeKeyMap.get(key);
-    if (node == null) return -1;
-    let val = node.val;
-    this.deleteNode(node);
-    this.putNodeAfterHead(node);
-    return val;
-  }
+    deleteNode(node){
+        let nextNode = node.next;
+        let prevNode = node.prev;
+        prevNode.next = nextNode;
+        nextNode.prev = prevNode;
+    }
+    put(key,value){
+        if(this.nodeMapKey.has(key)){
+            let node = this.nodeMapKey.get(key);
+            node.val = value;
+            this.deleteNode(node);
+            this.putNodeAfterHead(node);
+        }
+        if(this.capacity == this.nodeMapKey.size){
+            let node = this.tail.prev;
+            this.nodeMapKey.delete(node.key)
+            this.deleteNode(node)
+        }
+        let newNode = new Node(key,value);
+        this.nodeMapKey.set(key,newNode);
+        this.putNodeAfterHead(newNode);
+    }
+    get(key){
+        if(!this.nodeMapKey.has(key)) return -1;
+        let node = this.nodeMapKey.get(key);
+        let val = node.val;
+        this.putNodeAfterHead(node);
+        return val;
+    }
 }
 
 // LRU Cache
